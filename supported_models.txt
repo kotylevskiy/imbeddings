@@ -1,0 +1,67 @@
+# ===== DINOv3 (best modern self-supervised vision embeddings) =====
+facebook/dinov3-vits16-pretrain-lvd1689m        # ~22M  — smallest DINOv3, fast, good CPU default
+facebook/dinov3-vits16plus-pretrain-lvd1689m    # ~29M  — tiny+, slightly better than vits16
+facebook/dinov3-vitb16-pretrain-lvd1689m        # ~86M  — best all-around default (quality / speed)
+facebook/dinov3-vitl16-pretrain-lvd1689m        # ~0.3B — high-quality embeddings, GPU recommended
+facebook/dinov3-vith16plus-pretrain-lvd1689m    # ~0.8B — very strong global representations
+facebook/dinov3-vit7b16-pretrain-lvd1689m       # ~7B   — research-scale, offline / GPU-only
+
+# Satellite imagery variants (same structure, different data domain)
+facebook/dinov3-vitl16-pretrain-sat493m         # ~0.3B — aerial / satellite imagery only
+facebook/dinov3-vit7b16-pretrain-sat493m        # ~7B   — large-scale remote sensing
+
+
+# ===== DINOv2 (very stable, widely deployed) =====
+facebook/dinov2-small                           # ~22M  — small, fast, stable baseline
+facebook/dinov2-base                            # ~87M  — common production choice
+facebook/dinov2-large                           # ~0.3B — higher quality, slower
+facebook/dinov2-giant                           # ~1B   — very strong, GPU-only
+
+# Linear-probe variants (same token structure)
+facebook/dinov2-small-imagenet1k-1-layer        # ~23M  — small + probe head
+facebook/dinov2-base-imagenet1k-1-layer         # ~87M  — base + probe
+facebook/dinov2-large-imagenet1k-1-layer        # ~0.3B — large + probe
+facebook/dinov2-giant-imagenet1k-1-layer        # ~1B   — giant + probe
+
+
+# ===== DINOv1 (older, simple, predictable) =====
+facebook/dino-vits8                             # ~22M  — smallest legacy DINO
+facebook/dino-vits16                            # ~21M  — small legacy ViT
+facebook/dino-vitb8                             # ~86M  — classic DINO baseline
+facebook/dino-vitb16                            # ~86M  — classic, slightly slower
+
+
+# ===== WebSSL DINO (very large-scale ViT encoders) =====
+facebook/webssl-dino300m-full2b-224             # ~0.3B — smallest WebSSL option
+facebook/webssl-dino1b-full2b-224               # ~1B   — large SSL pretraining
+facebook/webssl-dino2b-full2b-224               # ~2B   — GPU-only
+facebook/webssl-dino3b-full2b-224               # ~3B   — very large
+facebook/webssl-dino5b-full2b-224               # ~5B   — extreme scale
+facebook/webssl-dino7b-full8b-224               # ~6B   — extreme, research-grade
+facebook/webssl-dino7b-full8b-378               # ~6B   — higher resolution
+facebook/webssl-dino7b-full8b-518               # ~6B   — highest resolution
+facebook/webssl-dino2b-light2b-224              # ~2B   — lighter WebSSL variant
+facebook/webssl-dino2b-heavy2b-224              # ~2B   — heavier WebSSL variant
+facebook/webssl-dino3b-light2b-224              # ~3B   — lighter WebSSL variant
+facebook/webssl-dino3b-heavy2b-224              # ~3B   — heavier WebSSL variant
+
+
+# ===== DeiT (supervised ViT, structurally clean) =====
+facebook/deit-tiny-patch16-224                  # small supervised ViT
+facebook/deit-small-patch16-224                 # small supervised ViT
+facebook/deit-base-patch16-224                  # base supervised ViT
+facebook/deit-base-patch16-384                  # base + higher resolution
+
+
+# ===== Google ViT (canonical Vision Transformer) =====
+google/vit-base-patch16-224                     # standard ViT baseline
+google/vit-base-patch16-224-in21k               # pretrained on ImageNet-21k
+google/vit-base-patch16-384                     # higher resolution
+google/vit-base-patch32-224-in21k               # larger patches, fewer tokens
+google/vit-base-patch32-384                     # larger patches + higher resolution
+google/vit-large-patch16-224                    # large supervised ViT
+google/vit-large-patch16-224-in21k              # large + IN21k
+google/vit-large-patch16-384                    # large + high resolution
+google/vit-large-patch32-224-in21k              # large patches
+google/vit-large-patch32-384                    # large patches + high resolution
+google/vit-huge-patch14-224-in21k               # very large supervised ViT

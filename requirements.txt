@@ -1,0 +1,7 @@
+transformers
+pillow
+python-dotenv
+numpy
+fastapi
+uvicorn
+httpx
