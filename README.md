@@ -225,6 +225,11 @@ services:
       IMBEDDINGS_PORT: ${IMBEDDINGS_PORT:-8000}
     ports:
       - "${IMBEDDINGS_PORT:-8000}:${IMBEDDINGS_PORT:-8000}"
+    volumes:
+      - hf_cache:/root/.cache/huggingface
+
+volumes:
+  hf_cache:
 ```
 
 ## API documentation
