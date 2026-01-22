@@ -1,0 +1,8 @@
+services:
+  imbeddings:
+    build:
+      dockerfile: Dockerfile.gpu
+      args:
+        PYTORCH_IMAGE: ${PYTORCH_IMAGE:?PYTORCH_IMAGE is required}
+    gpus: all
+    ipc: host

@@ -1,14 +1,18 @@
 services:
   imbeddings:
-    build: .
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile.cpu
     image: imbeddings
     container_name: imbeddings
     environment:
       HF_TOKEN: ${HF_TOKEN:?HF_TOKEN is required}
     ports:
-      - "${UVICORN_PORT:-8000}:${UVICORN_PORT:-8000}"
+      - "${IMBEDDINGS_PORT:-8000}:${IMBEDDINGS_PORT:-8000}"
     volumes:
-      - hf_cache:/root/.cache/huggingface
+      - hf-cache:/root/.cache/huggingface
 
 volumes:
-  hf_cache:
+  hf-cache:

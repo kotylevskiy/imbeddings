@@ -1,0 +1,22 @@
+ARG PYTORCH_IMAGE
+FROM pytorch/${PYTORCH_IMAGE}
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    VIRTUAL_ENV=/opt/venv \
+    DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends python3-venv \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN python -m venv --system-site-packages $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --upgrade pip \
+ && pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+CMD ["sh", "-c", "uvicorn service.main:app --host 0.0.0.0 --port ${IMBEDDINGS_PORT:-8000}"]
