@@ -3,6 +3,6 @@ services:
     build:
       dockerfile: Dockerfile.gpu
       args:
-        PYTORCH_IMAGE: ${PYTORCH_IMAGE:?PYTORCH_IMAGE is required}
+        PYTORCH_TAG: ${PYTORCH_TAG:?PYTORCH_TAG is required}
     gpus: all
     ipc: host

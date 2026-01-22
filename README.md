@@ -136,6 +136,85 @@ If a model is gated:
 
 After access is approved, no additional configuration is required — the service will be able to download the model using a read-only token.
 
+> ⚠️ **CUDA availability and model size**
+>
+> Imbeddings can run on CPU-only systems, and many models (including smaller DINOv3 / ViT variants) work reliably in CPU memory, including inside Docker containers. However, **larger models may fail to load or run without CUDA support** due to memory and performance constraints.
+> This typically manifests as out-of-memory errors, extremely slow startup, or runtime failures during inference.
+>
+> Examples:
+> - Small / base models (e.g. `dinov3-vits16`, `dinov3-vitb16`) usually work on CPU
+> - Large models (e.g. `dinov3-vitl16`, `dinov3-vith16plus`) slow in CPU, much faster with CUDA
+> - Very large models (e.g. `dinov3-vit7b16`, WebSSL DINO models) **require CUDA** and sufficient GPU memory
+>
+> If you plan to use large or research-scale models, a CUDA-enabled environment is strongly recommended.
+> CPU-only deployments should explicitly select an appropriate model size.
+
+
+## Running with Docker
+
+The easiest way to run Imbeddings on your server is via `docker compose`. 
+
+Two Dockerfiles are provided:
+
+- `Dockerfile.cpu` for CPU-only builds (PyTorch CPU wheels)
+- `Dockerfile.gpu` for GPU builds (based on `pytorch/pytorch` CUDA images)
+
+### CPU ONLY processing via Docker Compose
+
+Create a `.env` file with required environment variables (at minimum `HF_TOKEN`):
+
+```dotenv
+HF_TOKEN=your_token
+IMBEDDINGS_PORT=8000
+```
+Then run:
+
+```bash
+git clone https://github.com/kotylevskiy/imbeddings.git
+cd imbeddings
+docker compose up -d
+```
+
+### GPU processing via Docker Compose
+
+> ⚠️ **Docker GPU passthrough via NVIDIA Container Toolkit is supported only on Linux hosts.**
+
+To use the GPU image, install:
+
+- NVIDIA GPU driver (host)
+- NVIDIA Container Toolkit (nvidia-docker2) so Docker can pass GPUs into containers
+- Docker Engine + Docker Compose
+
+### Choosing a PyTorch GPU image
+
+Set `PYTORCH_TAG` in your `.env` file to use `Dockerfile.gpu`.
+Choose a tag with a CUDA version supported by your NVIDIA driver.
+If you are unsure which CUDA version is supported, check:
+
+```bash
+nvidia-smi
+```
+
+Available tags are listed here: https://hub.docker.com/r/pytorch/pytorch/tags
+Prefer `*-runtime` images.
+
+Set `PYTORCH_TAG` to the tag only, so the Dockerfile resolves to
+`pytorch/pytorch:TAG`:
+
+```dotenv
+HF_TOKEN=your_token
+PYTORCH_TAG=2.10.0-cuda13.0-cudnn9-runtime
+IMBEDDINGS_PORT=8000
+```
+
+To start the service, run:
+
+```bash
+docker compose -f docker-compose.yaml -f docker-compose.gpu.yaml up --build
+```
+
+## Native installation
+
 ### Python
 
 This project depends on `PyTorch` and Hugging Face `Transformers`. As of early 2026, Python 3.8–3.12 are supported.
@@ -180,22 +259,6 @@ pip install -r requirements.txt
    ```
 4. Install PyTorch and Torchvision using link, provided by the guide.  
 
-> ⚠️ **CUDA availability and model size**
->
-> Imbeddings can run on CPU-only systems, and many models (including smaller DINOv3 / ViT variants) work reliably in CPU memory, including inside Docker containers.
->
-> However, **larger models may fail to load or run without CUDA support** due to memory and performance constraints.
-> This typically manifests as out-of-memory errors, extremely slow startup, or runtime failures during inference.
->
-> Examples:
-> - Small / base models (e.g. `dinov3-vits16`, `dinov3-vitb16`) usually work on CPU
-> - Large models (e.g. `dinov3-vitl16`, `dinov3-vith16plus`) slow in CPU, much faster with CUDA
-> - Very large models (e.g. `dinov3-vit7b16`, WebSSL DINO models) **require CUDA** and sufficient GPU memory
->
-> If you plan to use large or research-scale models, a CUDA-enabled environment is strongly recommended.
-> CPU-only deployments should explicitly select an appropriate model size.
-
-
 ### Run once with Uvicorn
 
 Create a `.env` file with required environment variables (at minimum `HF_TOKEN`), then run:
@@ -215,52 +278,6 @@ source .env && uvicorn service.main:app --host=$IMBEDDINGS_HOST --port=$IMBEDDIN
 ### Running as a Linux Service (systemd)
 
 See `systemd_howto.md` to get detailed instructions on how to run imbeddings as a linux service.
-
-## Running with Docker
-
-Imbeddings can be run using Docker or Docker Compose. The provided Docker setup is CPU-only and suitable for small to medium models.
-
-### Build and run locally (Docker)
-
-From the repository root:
-
-```bash
-docker build -t imbeddings .
-docker run -p 8000:8000 \
-  -e HF_TOKEN=your_token \
-  imbeddings
-```
-
-### Run using Docker Compose
-
-Create a `.env` file with required environment variables (at minimum `HF_TOKEN`), then run:
-
-```bash
-docker compose up --build
-```
-
-### Run without cloning the repository
-
-You can run Imbeddings using Docker Compose without checking out the repository by building directly from the Git URL.
-
-Create a `docker-compose.yaml` file:
-
-```yaml
-services:
-  imbeddings:
-    build:
-      context: https://github.com/kotylevskiy/imbeddings.git
-    image: imbeddings
-    environment:
-      HF_TOKEN: ${HF_TOKEN:?HF_TOKEN is required}
-    ports:
-      - "${IMBEDDINGS_PORT:-8000}:${IMBEDDINGS_PORT:-8000}"
-    volumes:
-      - hf_cache:/root/.cache/huggingface
-
-volumes:
-  hf_cache:
-```
 
 ## API documentation
 
