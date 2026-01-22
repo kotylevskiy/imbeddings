@@ -142,7 +142,18 @@ This project depends on `PyTorch` and Hugging Face `Transformers`. As of early 2
 
 Recommended: **Python 3.12**
 
+Install supported python version using your package manager.
+
 ### Dependencies
+
+Clone the repo and create virtual environment:
+
+```bash
+git clone https://github.com/kotylevskiy/imbeddings.git
+cd imbeddings
+python3.12 -m venv .venv
+source .venv/bin/activate
+```
 
 Install dependencies from `requirements.txt`:
 
@@ -185,6 +196,26 @@ pip install -r requirements.txt
 > CPU-only deployments should explicitly select an appropriate model size.
 
 
+### Run once with Uvicorn
+
+Create a `.env` file with required environment variables (at minimum `HF_TOKEN`), then run:
+
+```bash
+uvicorn service.main:app
+```
+
+This will run imbeddings with local-only access on the default Uvicorn port (8000).
+
+If you want a one-off local run on another interface (e.g. `0.0.0.0`) or port, you can add `IMBEDDINGS_HOST` and `IMBEDDINGS_PORT` to the `.env` file and pass the host/port explicitly:
+
+```bash
+source .env && uvicorn service.main:app --host=$IMBEDDINGS_HOST --port=$IMBEDDINGS_PORT
+```
+
+### Running as a Linux Service (systemd)
+
+See `systemd_howto.md` to get detailed instructions on how to run imbeddings as a linux service.
+
 ## Running with Docker
 
 Imbeddings can be run using Docker or Docker Compose. The provided Docker setup is CPU-only and suitable for small to medium models.
@@ -223,7 +254,7 @@ services:
     environment:
       HF_TOKEN: ${HF_TOKEN:?HF_TOKEN is required}
     ports:
-      - "${UVICORN_PORT:-8000}:${UVICORN_PORT:-8000}"
+      - "${IMBEDDINGS_PORT:-8000}:${IMBEDDINGS_PORT:-8000}"
     volumes:
       - hf_cache:/root/.cache/huggingface
 
