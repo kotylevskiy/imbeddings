@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile.cpu
     image: imbeddings
     container_name: imbeddings
+    restart: unless-stopped
     environment:
       HF_TOKEN: ${HF_TOKEN:?HF_TOKEN is required}
       IMBEDDINGS_PORT: ${IMBEDDINGS_PORT:-8000}

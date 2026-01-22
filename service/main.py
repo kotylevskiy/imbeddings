@@ -32,6 +32,7 @@ def info() -> dict:
         "service": "imbeddings",
         "version": settings.service_version,
         "device": str(device),
+        "cuda_memory_fraction": settings.cuda_memory_fraction,
         "max_loaded_models": settings.max_loaded_models,
         "max_batch_size": settings.max_batch_size,
         "max_image_width": settings.max_image_width,

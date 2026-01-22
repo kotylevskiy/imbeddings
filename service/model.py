@@ -41,6 +41,7 @@ def resolve_device() -> torch.device:
 def _load_model_bundle(resolved_model_id: str) -> ModelBundle:
     token = _get_hf_token()
     device = resolve_device()
+    _configure_cuda_memory_fraction(device)
 
     processor = AutoImageProcessor.from_pretrained(
         resolved_model_id,
@@ -59,3 +60,16 @@ def _load_model_bundle(resolved_model_id: str) -> ModelBundle:
 def load_model_bundle(model_id: str) -> ModelBundle:
     resolved_model_id = resolve_model_id(model_id)
     return _load_model_bundle(resolved_model_id)
+
+
+@lru_cache(maxsize=1)
+def _configure_cuda_memory_fraction(device: torch.device) -> None:
+    if device.type != "cuda":
+        return
+    fraction = settings.cuda_memory_fraction
+    if fraction is None:
+        return
+    if not torch.cuda.is_available():
+        return
+    device_index = device.index if device.index is not None else torch.cuda.current_device()
+    torch.cuda.set_per_process_memory_fraction(fraction, device=device_index)
